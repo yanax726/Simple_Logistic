@@ -13,10 +13,16 @@ test_that("simple_logistic function works correctly", {
   expect_s3_class(model$fit, "glm")
 
   # Test with missing data
-  expect_error(simple_logistic(outcome ~ age + bmi + treatment), "Error: Provide both 'formula' and 'data'.")
+  expect_error(simple_logistic(outcome ~ age + bmi + treatment), "Provide both 'formula' and 'data'.")
 
   # Test with incorrect formula
-  expect_error(simple_logistic("outcome ~ age", data = health_data), "Error: 'formula' must be valid.")
+  expect_error(simple_logistic("outcome ~ age", data = health_data), "'formula' must be valid.")
+
+  # Test with 'data' not being a data frame
+  expect_error(
+    simple_logistic(outcome ~ age + bmi + treatment, data = "not_a_data_frame"),
+    "'data' must be a data frame."
+  )
 })
 
 test_that("diagnostic_plots function works correctly", {
@@ -28,7 +34,7 @@ test_that("diagnostic_plots function works correctly", {
   expect_true(all(sapply(plots, function(p) inherits(p, "ggplot"))))
 
   # Test with incorrect model
-  expect_error(diagnostic_plots(model$fit), "Error: The model must be of class 'simple_logistic'.")
+  expect_error(diagnostic_plots(model$fit), "The model must be of class 'simple_logistic'.")
 })
 
 test_that("plot_predictions function works correctly", {
@@ -50,15 +56,12 @@ test_that("plot_predictions function works correctly", {
 
   # Test with missing outcome variable
   new_data_missing <- new_data[, -4]
-  expect_error(plot_predictions(model, newdata = new_data_missing), "Error: The outcome variable 'outcome' is missing in the data.")
+  expect_error(plot_predictions(model, newdata = new_data_missing), "The outcome variable 'outcome' is missing in the data.")
 
-  # **New Test: Test with invalid model class**
-  # Create a model that is not of class "simple_logistic"
+  # Test with invalid model class
   lm_model <- lm(outcome ~ age + bmi + treatment, data = health_data)
-  
-  # Expect an error message about the incorrect model class
   expect_error(
     plot_predictions(lm_model),
-    "Error: The model must be of class 'simple_logistic'."
+    "The model must be of class 'simple_logistic'."
   )
 })

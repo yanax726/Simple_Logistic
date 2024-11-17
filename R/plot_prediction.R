@@ -25,7 +25,7 @@
 plot_predictions <- function(model, newdata = NULL) {
   # Check if the model is of the correct class
   if (!inherits(model, "simple_logistic")) {
-    stop("Error: The model must be of class 'simple_logistic'.")
+    stop("The model must be of class 'simple_logistic'.")
   }
 
   # Use new data if provided; otherwise, use the model's data
@@ -38,7 +38,7 @@ plot_predictions <- function(model, newdata = NULL) {
   # Ensure the outcome variable is present
   outcome_var <- as.character(model$formula[[2]])
   if (!(outcome_var %in% names(data))) {
-    stop(paste("Error: The outcome variable '", outcome_var, "' is missing in the data.", sep = ""))
+    stop(paste("The outcome variable '", outcome_var, "' is missing in the data.", sep = ""))
   }
 
   # Predict probabilities
@@ -57,4 +57,3 @@ plot_predictions <- function(model, newdata = NULL) {
   # Return the ggplot object
   return(plot)
 }
-

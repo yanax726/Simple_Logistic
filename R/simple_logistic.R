@@ -28,13 +28,13 @@
 simple_logistic <- function(formula, data, ...) {
   # Check inputs
   if (missing(formula) || missing(data)) {
-    stop("Error: Provide both 'formula' and 'data'.")
+    stop("Provide both 'formula' and 'data'.")
   }
   if (!inherits(formula, "formula")) {
-    stop("Error: 'formula' must be valid.")
+    stop("'formula' must be valid.")
   }
   if (!is.data.frame(data)) {
-    stop("Error: 'data' must be a data frame.")
+    stop("'data' must be a data frame.")
   }
 
   # Fit model
@@ -54,4 +54,3 @@ simple_logistic <- function(formula, data, ...) {
 
   return(result)
 }
-
