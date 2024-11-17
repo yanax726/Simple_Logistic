@@ -1,8 +1,12 @@
 context("SimpleLogistic Package Tests")
 
-test_that("simple_logistic function works correctly", {
-  data("health_data")
+library(testthat)
+library(SimpleLogistic)
 
+# Load the health_data
+data("health_data")
+
+test_that("simple_logistic function works correctly", {
   # Test with correct inputs
   model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
   expect_s3_class(model, "simple_logistic")
@@ -16,7 +20,6 @@ test_that("simple_logistic function works correctly", {
 })
 
 test_that("diagnostic_plots function works correctly", {
-  data("health_data")
   model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
 
   # Test with correct model
@@ -29,7 +32,6 @@ test_that("diagnostic_plots function works correctly", {
 })
 
 test_that("plot_predictions function works correctly", {
-  data("health_data")
   model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
 
   # Test with model data
@@ -49,6 +51,14 @@ test_that("plot_predictions function works correctly", {
   # Test with missing outcome variable
   new_data_missing <- new_data[, -4]
   expect_error(plot_predictions(model, newdata = new_data_missing), "Error: The outcome variable 'outcome' is missing in the data.")
+
+  # **New Test: Test with invalid model class**
+  # Create a model that is not of class "simple_logistic"
+  lm_model <- lm(outcome ~ age + bmi + treatment, data = health_data)
+  
+  # Expect an error message about the incorrect model class
+  expect_error(
+    plot_predictions(lm_model),
+    "Error: The model must be of class 'simple_logistic'."
+  )
 })
-
-
