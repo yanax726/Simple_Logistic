@@ -1,2 +1,9 @@
-^.*\.Rproj$
+^data-raw/
+^LICENSE\.md$
+^SimpleLogistic\.Rproj$
+^\.gitignore$
+^\.Rproj.user/
+^\.Rhistory$
+^\.RData$
 ^\.Rproj\.user$
+^\.github$
