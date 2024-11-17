@@ -1,1 +1,9 @@
+# macOS
 .DS_Store
+
+# RStudio
+.Rhistory
+.RData
+.Rproj.user/
+
+tests/testthat/.Rhistory.DS_Store

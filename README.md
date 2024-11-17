@@ -1,132 +1,55 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # SimpleLogistic
-A simplified approach to logistic regression analysis in R, tailored for health data science applications.
 
-## Introduction
+<!-- badges: start -->
 
-**SimpleLogistic** is an R package I developed to make logistic regression easier, especially for those working with health data. It provides functions for fitting logistic regression models, creating diagnostic plots, and visualizing predicted probabilities. I hope this package makes it easier for students and practitioners to perform logistic regression without getting too bogged down in coding details.
+[![Codecov test
+coverage](https://codecov.io/gh/yanax726/Simple_Logistic/graph/badge.svg)](https://app.codecov.io/gh/yanax726/Simple_Logistic)
+<!-- badges: end -->
 
-## Features
-
-- **Easy Model Fitting**: Quickly fit logistic regression models using a simple function.
-- **Diagnostic Plots**: Generate basic diagnostic plots to check your model.
-- **Prediction Visualization**: Plot predicted probabilities against actual outcomes.
-- **Interaction Terms**: Easily include interaction terms in your models.
-- **Compatibility with Base R**: Works smoothly with base R functions for further analysis.
+The goal of SimpleLogistic is to …
 
 ## Installation
 
-You can install **SimpleLogistic** from GitHub:
+You can install the development version of SimpleLogistic from
+[GitHub](https://github.com/) with:
 
-```r
-# Install devtools if you don't have it
-install.packages("devtools")
-
-# Install SimpleLogistic from GitHub
-devtools::install_github("yourusername/SimpleLogistic")
+``` r
+# install.packages("pak")
+pak::pak("yanax726/Simple_Logistic")
 ```
 
-## Getting Started
-### Load the package and the example dataset:
-```r
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
 library(SimpleLogistic)
-
-# Load the example dataset
-data("health_data")
-
-# Look at the first few rows
-head(health_data)
+## basic example code
 ```
-## Usage
-### Fitting a Logistic Regression Model
-Use the simple_logistic() function to fit a model:
-```r
-# Fit the model
-model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
 
-# View the summary
-summary(model$fit)
+What is special about using `README.Rmd` instead of just `README.md`?
+You can include R chunks like so:
+
+``` r
+summary(cars)
+#>      speed           dist       
+#>  Min.   : 4.0   Min.   :  2.00  
+#>  1st Qu.:12.0   1st Qu.: 26.00  
+#>  Median :15.0   Median : 36.00  
+#>  Mean   :15.4   Mean   : 42.98  
+#>  3rd Qu.:19.0   3rd Qu.: 56.00  
+#>  Max.   :25.0   Max.   :120.00
 ```
-### Generating Diagnostic Plots
-Create diagnostic plots to assess the model:
-```r
-# Generate diagnostic plots
-plots <- diagnostic_plots(model)
 
-# Residuals vs Fitted Values
-print(plots$residuals_vs_fitted)
+You’ll still need to render `README.Rmd` regularly, to keep `README.md`
+up-to-date. `devtools::build_readme()` is handy for this.
 
-# ROC Curve
-print(plots$roc_curve)
-```
-### Visualizing Predicted Probabilities
-Plot the predicted probabilities:
-```r
-# Plot predicted probabilities
-plot_predictions(model)
-```
-## Advanced Usage
-### Including Interaction Terms
-Include interaction terms in the model:
-```r
-# Fit a model with an interaction term
-model_interaction <- simple_logistic(outcome ~ age * treatment + bmi, data = health_data)
+You can also embed plots, for example:
 
-# Summarize the model
-summary(model_interaction$fit)
-```
-### Making Predictions on New Data
-Predict outcomes for new data:
-```r
-# New data for prediction
-new_data <- data.frame(
-  age = c(35, 45, 55),
-  bmi = c(24, 28, 31),
-  treatment = c("A", "B", "A")
-)
+<img src="man/figures/README-pressure-1.png" width="100%" />
 
-# Predict probabilities
-new_data$predicted_prob <- predict(model$fit, newdata = new_data, type = "response")
-
-# View predictions
-print(new_data)
-```
-### Comparing with Base R Functions
-Check that the results are consistent with base R's glm() function:
-```r
-# Fit a model using glm()
-model_glm <- glm(outcome ~ age + bmi + treatment, data = health_data, family = binomial())
-
-# Compare coefficients
-all.equal(coef(model$fit), coef(model_glm))
-```
-## Dataset
-The package includes a simulated dataset health_data with:
-
-- **outcome:** Binary outcome variable (0 or 1)
-- **age:** Age in years
-- **bmi:** Body Mass Index
-- **treatment:** Treatment group ("A" or "B")
-You can load it using:
-```r
-data("health_data")
-```
-## Dependencies
-SimpleLogistic uses the following R packages:
-**ggplot2** for plotting.
-**pROC** for ROC curve analysis.
-You can install them with:
-```r
-install.packages(c("ggplot2", "pROC"))
-```
-## Contributing
-If you have suggestions or find any issues, feel free to open an issue or pull request on GitHub.
-
-## License
-This project is licensed under the MIT License.
-
-I hope SimpleLogistic is helpful for your logistic regression analyses, especially if you're just getting started with R and statistical modeling.
-
-For more examples and detailed usage, check out the package vignette:
-```r
-browseVignettes("SimpleLogistic")
-```
+In that case, don’t forget to commit and push the resulting figure
+files, so they display on GitHub and CRAN.

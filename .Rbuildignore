@@ -7,3 +7,5 @@
 ^\.RData$
 ^\.Rproj\.user$
 ^\.github$
+^README\.Rmd$
+^codecov\.yml$
