@@ -131,6 +131,4 @@ For more examples and detailed usage, check out the package vignette:
 ```r
 browseVignettes("SimpleLogistic")
 ```
-[![Codecov test
-coverage](https://codecov.io/gh/yanax726/Simple_Logistic/graph/badge.svg)](https://app.codecov.io/gh/yanax726/Simple_Logistic)
-<!-- badges: end -->
+[![Codecov test coverage](https://codecov.io/gh/yanax726/SimpleLogistic/branch/main/graph/badge.svg)](https://codecov.io/gh/yanax726/SimpleLogistic)
