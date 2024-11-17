@@ -131,3 +131,4 @@ For more examples and detailed usage, check out the package vignette:
 ```r
 browseVignettes("SimpleLogistic")
 ```
+[![codecov](https://codecov.io/gh/username/repository/branch/main/graph/badge.svg)](https://codecov.io/gh/username/repository)
