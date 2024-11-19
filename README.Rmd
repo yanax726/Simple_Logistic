@@ -34,7 +34,7 @@ A simplified approach to logistic regression analysis in R, tailored for health 
 
 You can install **SimpleLogistic** from GitHub:
 
-``` {r}
+```{r, eval = FALSE}
 # Install devtools if you don't have it
 install.packages("devtools")
 
@@ -134,11 +134,12 @@ You can load it using:
 data("health_data")
 ```
 ## Dependencies
+
 SimpleLogistic uses the following R packages:
-**ggplot2** for plotting.
-**pROC** for ROC curve analysis.
+- **ggplot2** for plotting.
+- **pROC** for ROC curve analysis.
 You can install them with:
-```{r}
+```{r, eval = FALSE}
 install.packages(c("ggplot2", "pROC"))
 ```
 
@@ -151,7 +152,7 @@ This project is licensed under the MIT License.
 I hope SimpleLogistic is helpful for your logistic regression analyses, especially if you're just getting started with R and statistical modeling.
 
 For more examples and detailed usage, check out the package vignette:
-```{r}
+```{r, eval = FALSE}
 browseVignettes("SimpleLogistic")
 ```
 
