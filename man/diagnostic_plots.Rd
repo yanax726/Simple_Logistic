@@ -10,16 +10,15 @@ diagnostic_plots(model)
 \item{model}{An object of class \code{"simple_logistic"}.}
 }
 \value{
-A list containing ggplot objects for the diagnostic plots:
-\item{residuals_vs_fitted}{Plot of residuals versus fitted values.}
-\item{roc_curve}{Receiver Operating Characteristic (ROC) curve.}
+A list with two ggplot objects:
+\item{residuals_vs_fitted}{Plot of residuals vs fitted values.}
+\item{roc_curve}{ROC curve showing model performance.}
 }
 \description{
-Creates diagnostic plots, including residuals vs fitted values and ROC curve.
+This function creates two diagnostic plots: residuals vs fitted values and an ROC curve.
 }
 \details{
-This function helps assess the fit of the logistic regression model by providing
-common diagnostic plots.
+These plots help you understand how well your model fits the data and how good it is at predicting outcomes.
 }
 \examples{
 library(SimpleLogistic)

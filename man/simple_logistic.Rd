@@ -7,25 +7,25 @@
 simple_logistic(formula, data, ...)
 }
 \arguments{
-\item{formula}{A formula specifying the model.}
+\item{formula}{A formula specifying the model, e.g., outcome ~ age + bmi + treatment.}
 
-\item{data}{A data frame containing the variables in the model.}
+\item{data}{A data frame containing the variables used in the model.}
 
-\item{...}{Additional arguments passed to \code{\link[stats]{glm}}.}
+\item{...}{Additional arguments to pass to \code{glm}.}
 }
 \value{
-An object of class \code{"simple_logistic"} containing:
-\item{call}{The matched call.}
+An object of class \code{"simple_logistic"} that includes:
+\item{call}{The function call.}
 \item{formula}{The model formula.}
 \item{fit}{The fitted \code{glm} model.}
 \item{predicted_prob}{Predicted probabilities from the model.}
 }
 \description{
-This function fits a logistic regression model using a simplified interface.
+This function fits a logistic regression model using an easy-to-use interface.
 }
 \details{
 This function is a wrapper around \code{glm()} with \code{family = binomial()}.
-It simplifies the process of fitting logistic regression models.
+It makes it easier to fit logistic regression models without dealing with all the parameters.
 }
 \examples{
 library(SimpleLogistic)

@@ -1,3 +1,5 @@
+# tests/testthat/test_simplelogistic.R
+
 context("SimpleLogistic Package Tests")
 
 library(testthat)
@@ -65,4 +67,3 @@ test_that("plot_predictions function works correctly", {
     "The model must be of class 'simple_logistic'."
   )
 })
-

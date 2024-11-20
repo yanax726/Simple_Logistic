@@ -2,24 +2,23 @@
 % Please edit documentation in R/plot_prediction.R
 \name{plot_predictions}
 \alias{plot_predictions}
-\title{Plot Predicted Probabilities Against Observed Outcomes}
+\title{Plot Predicted Probabilities Against Actual Outcomes}
 \usage{
 plot_predictions(model, newdata = NULL)
 }
 \arguments{
 \item{model}{An object of class \code{"simple_logistic"}.}
 
-\item{newdata}{Optional data frame for prediction. Defaults to model data.}
+\item{newdata}{(Optional) A new data frame for which to make predictions.}
 }
 \value{
 A ggplot object showing the distribution of predicted probabilities.
 }
 \description{
-Visualizes predicted probabilities from a logistic regression model.
+This function creates a histogram of predicted probabilities, colored by actual outcomes.
 }
 \details{
-This function creates a histogram of predicted probabilities, colored by the actual outcome.
-It helps in visualizing how well the model distinguishes between classes.
+This plot helps visualize how well the model's predicted probabilities align with the actual outcomes.
 }
 \examples{
 library(SimpleLogistic)

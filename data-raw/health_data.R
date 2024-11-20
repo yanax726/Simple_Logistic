@@ -30,3 +30,4 @@ health_data <- data.frame(
 
 # Save the dataset
 usethis::use_data(health_data, overwrite = TRUE)
+

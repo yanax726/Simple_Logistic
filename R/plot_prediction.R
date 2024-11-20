@@ -1,19 +1,19 @@
-#' Plot Predicted Probabilities Against Observed Outcomes
+# R/plot_predictions.R
+
+#' Plot Predicted Probabilities Against Actual Outcomes
 #'
-#' Visualizes predicted probabilities from a logistic regression model.
+#' This function creates a histogram of predicted probabilities, colored by actual outcomes.
 #'
-#' @importFrom stats predict
 #' @importFrom ggplot2 ggplot aes geom_histogram labs theme_minimal
 #' @importFrom rlang .data
 #'
 #' @param model An object of class \code{"simple_logistic"}.
-#' @param newdata Optional data frame for prediction. Defaults to model data.
+#' @param newdata (Optional) A new data frame for which to make predictions.
 #'
 #' @return A ggplot object showing the distribution of predicted probabilities.
 #'
 #' @details
-#' This function creates a histogram of predicted probabilities, colored by the actual outcome.
-#' It helps in visualizing how well the model distinguishes between classes.
+#' This plot helps visualize how well the model's predicted probabilities align with the actual outcomes.
 #'
 #' @examples
 #' library(SimpleLogistic)
@@ -23,37 +23,39 @@
 #'
 #' @export
 plot_predictions <- function(model, newdata = NULL) {
-  # Check if the model is of the correct class
+  # Ensure the model is of the correct class
   if (!inherits(model, "simple_logistic")) {
     stop("The model must be of class 'simple_logistic'.")
   }
 
-  # Use new data if provided; otherwise, use the model's data
-  data <- if (is.null(newdata)) {
-    model$fit$data
+  # If newdata is provided, use it; otherwise, use the original data
+  if (!is.null(newdata)) {
+    if (!is.data.frame(newdata)) {
+      stop("'newdata' must be a data frame.")
+    }
+
+    # Check if the outcome variable exists in newdata
+    if (!"outcome" %in% names(newdata)) {
+      stop("The outcome variable 'outcome' is missing in the data.")
+    }
+
+    predicted_prob <- predict(model$fit, newdata = newdata, type = "response")
+    plot_data <- data.frame(outcome = newdata$outcome, predicted_prob = predicted_prob)
   } else {
-    newdata
+    plot_data <- data.frame(outcome = model$fit$y, predicted_prob = model$predicted_prob)
   }
 
-  # Ensure the outcome variable is present
-  outcome_var <- as.character(model$formula[[2]])
-  if (!(outcome_var %in% names(data))) {
-    stop(paste("The outcome variable '", outcome_var, "' is missing in the data.", sep = ""))
-  }
-
-  # Predict probabilities
-  data$predicted_prob <- predict(model$fit, newdata = data, type = "response")
-
-  # Create the plot
-  plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data$predicted_prob, fill = factor(data[[outcome_var]]))) +
-    ggplot2::geom_histogram(alpha = 0.6, bins = 30, position = "identity") +
+  # Plot histogram of predicted probabilities colored by actual outcomes
+  p <- ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$predicted_prob, fill = factor(.data$outcome))) +
+    ggplot2::geom_histogram(position = "identity", alpha = 0.5, bins = 30) +
     ggplot2::labs(
-      title = "Predicted Probabilities",
+      title = "Predicted Probabilities vs Actual Outcomes",
       x = "Predicted Probability",
-      fill = "Outcome"
+      y = "Count",
+      fill = "Actual Outcome"
     ) +
     ggplot2::theme_minimal()
 
-  # Return the ggplot object
-  return(plot)
+  return(p)
 }
+

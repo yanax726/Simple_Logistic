@@ -15,17 +15,26 @@ knitr::opts_chunk$set(
 ```
 
 ## Introduction
-Logistic regression is essential for modeling binary outcomes. The `SimpleLogistic` package simplifies this process with user-friendly functions.
+Hi! If you're diving into logistic regression or working with binary outcomes in R, you've probably noticed that setting up models and interpreting results can be a bit tricky. That's where the **SimpleLogistic** package comes in. I created this package to simplify the process of fitting logistic regression models, generating diagnostic plots, and visualizing predictions. Whether you're a student learning the ropes or a practitioner analyzing health data, this package aims to make your workflow smoother and more intuitive.
 
 ## Getting Started
+Let's start by getting everything set up. We'll load the SimpleLogistic package, along with the necessary libraries, and take a look at the example dataset included in the package.
 
 ```{r setup, include=FALSE}
 library(SimpleLogistic)
+library(bench)
 data("health_data")
 head(health_data)
 ```
+### About the Dataset
+The health_data dataset is a simulated dataset designed to demonstrate how to use the SimpleLogistic package. It includes the following variables:
+- **outcome:** A binary outcome variable (0 or 1).
+- **age:** Age in years.
+- **bmi:** Body Mass Index.
+- **treatment:** Treatment group ("A" or "B").
 
 ## Fitting a Logistic Regression Model
+Fitting a logistic regression model using the simple_logistic() function is straightforward. This function is a wrapper around R's glm() function, making it easier to specify and interpret your models.
 ```{r}
 # Fit the model
 model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
@@ -35,32 +44,78 @@ summary(model$fit)
 ```
 
 ## Diagnostics
-Generate diagnostic plots to assess the model fit.
+After fitting a model, it's essential to check how well it fits the data. The diagnostic_plots() function helps generate two key plots:
+- **Residuals vs Fitted Values:** Helps identify patterns in residuals, indicating potential issues with the model.
+- **ROC Curve:** Assesses the model's ability to discriminate between classes.
 ```{r}
 # Generate diagnostic plots
 plots <- diagnostic_plots(model)
+
 # Residuals vs Fitted Values
 print(plots$residuals_vs_fitted)
+
 # ROC curve
 print(plots$roc_curve)
 ```
 
 ## Visualization
-Visualize the predicted probabilities against the observed outcomes.
+Visualizing predicted probabilities can provide insights into how well the model is performing. The plot_predictions() function creates a histogram of predicted probabilities, colored by the actual outcomes.
 ```{r}
 plot_predictions(model)
 ```
 
+#### What to Look For:
+- **Separation of Classes:** A good model will show clear separation between the predicted probabilities of the two outcome classes.
+- **Distribution:** The histogram should reflect the distribution of predicted probabilities, indicating the model's confidence in its predictions.
+
+## Efficiency Benchmarking
+Efficiency is crucial, especially when working with large datasets. Here, we'll use the bench package to compare the performance of the simple_logistic() function with R's base glm() function.
+```{r}
+# Create a larger dataset for benchmarking
+set.seed(123)
+n_large <- 10000
+age_large <- rnorm(n_large, mean = 50, sd = 10)
+bmi_large <- rnorm(n_large, mean = 25, sd = 4)
+treatment_large <- sample(c("A", "B"), n_large, replace = TRUE)
+logit_large <- -5 + 0.05 * age_large + 0.1 * bmi_large + ifelse(treatment_large == "A", 0.5, -0.5)
+prob_large <- 1 / (1 + exp(-logit_large))
+outcome_large <- rbinom(n_large, size = 1, prob = prob_large)
+health_data_large <- data.frame(
+  outcome = outcome_large,
+  age = age_large,
+  bmi = bmi_large,
+  treatment = treatment_large
+)
+
+# Benchmarking the simple_logistic function against glm
+bench_simple_logistic <- bench::mark(
+  simple_logistic_model = simple_logistic(outcome ~ age + bmi + treatment, data = health_data_large),
+  glm_model = glm(outcome ~ age + bmi + treatment, data = health_data_large, family = binomial()),
+  iterations = 10,
+  check = FALSE  # Disable result comparison
+)
+
+print(bench_simple_logistic)
+```
+#### Why check = FALSE?
+The bench::mark() function by default checks if all expressions produce identical results. Since simple_logistic() and glm() return different types of objects ("simple_logistic" vs. "glm"), this comparison fails. By setting check = FALSE, we focus solely on benchmarking the performance without worrying about result equivalence.
+
+#### Interpreting the Results:
+The benchmark will provide metrics like median execution time, minimum and maximum times, memory allocations, and garbage collections. You can compare how simple_logistic() stacks up against glm() in terms of speed and memory usage.
+
 ## Advanced Usage
 ### Including Interaction Terms
-We can include interaction terms in the model formula.
+Sometimes, the effect of one variable on the outcome depends on another variable. You can include interaction terms in your model to explore these relationships.
 ```{r}
 # Fit a model with interaction terms
 model_interaction <- simple_logistic(outcome ~ age * treatment + bmi, data = health_data)
 summary(model_interaction$fit)
 ```
+#### What Does age * treatment Do?
+Including age * treatment in the formula adds both the main effects (age and treatment) and their interaction (age:treatment). This allows you to see if the effect of age on outcome changes depending on the treatment group.
 
 ## Making Predictions on New Data
+After fitting a model, you might want to predict outcomes for new observations. Here's how you can do that.
 ```{r}
 # New data for prediction
 new_data <- data.frame(
@@ -75,9 +130,11 @@ new_data$predicted_prob <- predict(model$fit, newdata = new_data, type = "respon
 # View the predictions
 print(new_data)
 ```
+#### Understanding the Output:
+The predicted_prob column shows the model's estimated probability of outcome being 1 for each new observation. These probabilities can help in decision-making processes, such as determining the likelihood of a positive outcome under different conditions.
 
 ## Comparasion with basic R function
-Check that the results are consistent with base R's glm() function.
+It's always a good idea to ensure that your custom functions are working as expected. Let's compare the coefficients from simple_logistic() with those from the base glm() function to verify their consistency.
 ```{r}
 # Fit a model using glm()
 model_glm <- glm(outcome ~ age + bmi + treatment, data = health_data, family = binomial())
@@ -85,6 +142,9 @@ model_glm <- glm(outcome ~ age + bmi + treatment, data = health_data, family = b
 # Compare coefficients
 all.equal(coef(model$fit), coef(model_glm))
 ```
+
+#### What Does all.equal() Do?
+That's a wrap! The SimpleLogistic package aims to make logistic regression in R more accessible and user-friendly, especially for those working with health data. With easy model fitting, helpful diagnostic plots, and straightforward visualization tools, this package can simplify your analysis process. Whether you're a student learning logistic regression or a practitioner applying it to real-world data, I hope SimpleLogistic proves to be a valuable tool in your statistical toolkit.
 
 ## Conclusion
 The SimpleLogistic package provides a streamlined approach to logistic regression analysis with enhanced diagnostics and visualization tools. It is particularly useful for health researchers and practitioners who need to model binary outcomes efficiently and interpret results effectively.

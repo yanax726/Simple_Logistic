@@ -72,10 +72,10 @@ head(health_data)
 Use the simple_logistic() function to fit a model:
 
 ``` r
-# Fit the model
+# Fit a logistic regression model
 model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
 
-# View the summary
+# View the summary of the model
 summary(model$fit)
 #> 
 #> Call:
@@ -97,7 +97,31 @@ summary(model$fit)
 #> AIC: 237.28
 #> 
 #> Number of Fisher Scoring iterations: 4
+
+# Create diagnostic plots
+plots <- diagnostic_plots(model)
+#> Setting levels: control = 0, case = 1
+#> Setting direction: controls < cases
+print(plots$residuals_vs_fitted)
 ```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+``` r
+print(plots$roc_curve)
+```
+
+<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
+
+``` r
+
+# Plot predicted probabilities
+plot_predictions(model)
+#> Warning: Use of `data[[outcome_var]]` is discouraged.
+#> ℹ Use `.data[[outcome_var]]` instead.
+```
+
+<img src="man/figures/README-unnamed-chunk-4-3.png" width="100%" />
 
 ### Generating Diagnostic Plots
 

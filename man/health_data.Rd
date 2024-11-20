@@ -5,9 +5,9 @@
 \alias{health_data}
 \title{Simulated Health Dataset}
 \format{
-A data frame with 200 observations on the following variables:
+A data frame with 200 rows and 4 columns:
 \describe{
-\item{outcome}{Binary outcome variable (0 or 1)}
+\item{outcome}{Binary outcome (0 or 1)}
 \item{age}{Age in years}
 \item{bmi}{Body Mass Index}
 \item{treatment}{Treatment group ("A" or "B")}
@@ -20,9 +20,9 @@ Simulated data
 health_data
 }
 \description{
-A simulated dataset containing health-related variables for logistic regression analysis.
+This dataset contains simulated health-related variables used for logistic regression analysis.
 }
 \details{
-This dataset is simulated for demonstrating logistic regression models.
+The data is randomly generated to demonstrate how to use the SimpleLogistic package.
 }
 \keyword{datasets}
