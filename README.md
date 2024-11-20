@@ -1,23 +1,19 @@
 
 # SimpleLogistic
 
-<!-- badges: start -->
-
 [![Codecov test
 coverage](https://codecov.io/gh/yanax726/Simple_Logistic/graph/badge.svg)](https://app.codecov.io/gh/yanax726/Simple_Logistic)
-<!-- badges: end -->
-
-A simplified approach to logistic regression analysis in R, tailored for
-health data science applications.
 
 ## Introduction
 
-**SimpleLogistic** is an R package I developed to make logistic
-regression easier, especially for those working with health data. It
-provides functions for fitting logistic regression models, creating
-diagnostic plots, and visualizing predicted probabilities. I hope this
-package makes it easier for students and practitioners to perform
-logistic regression without getting too bogged down in coding details.
+**SimpleLogistic** is an R package I developed to simplify the process
+of performing logistic regression analysis, especially tailored for
+health data science applications. It provides easy-to-use functions for
+fitting logistic regression models, generating diagnostic plots, and
+visualizing predicted probabilities. Whether you’re a student just
+getting started with logistic regression or a practitioner analyzing
+health outcomes, this package aims to make your workflow more efficient
+and intuitive.
 
 ## Features
 
@@ -29,6 +25,11 @@ logistic regression without getting too bogged down in coding details.
   actual outcomes.
 - **Interaction Terms**: Easily include interaction terms in your
   models.
+- **Performance Benchmarking**: Compare the efficiency of
+  simple_logistic() with R’s base glm() function using the bench
+  package.
+- **Comprehensive Vignette**: Access a detailed guide with examples and
+  explanations to help you make the most of the package.
 - **Compatibility with Base R**: Works smoothly with base R functions
   for further analysis.
 
@@ -37,12 +38,18 @@ logistic regression without getting too bogged down in coding details.
 You can install **SimpleLogistic** from GitHub:
 
 ``` r
-# Install devtools if you don't have it
+# Install devtools if you haven't already
 install.packages("devtools")
 
+# Load devtools
+library(devtools)
+
 # Install SimpleLogistic from GitHub
-devtools::install_github("yourusername/SimpleLogistic")
+install_github("yourusername/SimpleLogistic")
 ```
+
+Make sure to replace “yourusername/SimpleLogistic” with the actual path
+to your GitHub repository.
 
 ## Getting Started
 
@@ -65,6 +72,11 @@ head(health_data)
 #> 6       1 67.15065 23.09501         A
 ```
 
+#### The health_data dataset includes:
+
+**outcome**: Binary outcome variable (0 or 1) **age**: Age in years
+**bmi**: Body Mass Index **treatment**: Treatment group (“A” or “B”)
+
 ## Usage
 
 ### Fitting a Logistic Regression Model
@@ -72,10 +84,10 @@ head(health_data)
 Use the simple_logistic() function to fit a model:
 
 ``` r
-# Fit a logistic regression model
+# Fit the model
 model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
 
-# View the summary of the model
+# View the summary
 summary(model$fit)
 #> 
 #> Call:
@@ -97,35 +109,17 @@ summary(model$fit)
 #> AIC: 237.28
 #> 
 #> Number of Fisher Scoring iterations: 4
-
-# Create diagnostic plots
-plots <- diagnostic_plots(model)
-#> Setting levels: control = 0, case = 1
-#> Setting direction: controls < cases
-print(plots$residuals_vs_fitted)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
-
-``` r
-print(plots$roc_curve)
-```
-
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
-
-``` r
-
-# Plot predicted probabilities
-plot_predictions(model)
-#> Warning: Use of `data[[outcome_var]]` is discouraged.
-#> ℹ Use `.data[[outcome_var]]` instead.
-```
-
-<img src="man/figures/README-unnamed-chunk-4-3.png" width="100%" />
+This function simplifies the model fitting process by wrapping around
+the glm() function, allowing you to focus more on interpreting results
+rather than setting up the model.
 
 ### Generating Diagnostic Plots
 
-Create diagnostic plots to assess the model:
+After fitting your model, it’s essential to check how well it fits the
+data. The diagnostic_plots() function helps you create two key
+diagnostic plots.
 
 ``` r
 # Generate diagnostic plots
@@ -146,10 +140,14 @@ print(plots$roc_curve)
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
+These plots help you assess the goodness-of-fit and the model’s ability
+to discriminate between outcome classes.
 
 ### Visualizing Predicted Probabilities
 
-Plot the predicted probabilities:
+Understanding the distribution of predicted probabilities can provide
+valuable insights into your model’s performance. Use the
+plot_predictions() function to visualize this.
 
 ``` r
 # Plot predicted probabilities
@@ -158,9 +156,68 @@ plot_predictions(model)
 #> ℹ Use `.data[[outcome_var]]` instead.
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" /> \##
-Advanced Usage \### Including Interaction Terms Include interaction
-terms in the model:
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" /> This
+histogram shows how predicted probabilities are distributed across
+actual outcome classes, helping you gauge the model’s effectiveness.
+
+### Efficiency Benchmarking
+
+Efficiency matters, especially with large datasets. Here’s how you can
+benchmark the performance of simple_logistic() against R’s base glm()
+function using the bench package.
+
+``` r
+# Create a larger dataset for benchmarking
+set.seed(123)
+n_large <- 10000
+age_large <- rnorm(n_large, mean = 50, sd = 10)
+bmi_large <- rnorm(n_large, mean = 25, sd = 4)
+treatment_large <- sample(c("A", "B"), n_large, replace = TRUE)
+logit_large <- -5 + 0.05 * age_large + 0.1 * bmi_large + ifelse(treatment_large == "A", 0.5, -0.5)
+prob_large <- 1 / (1 + exp(-logit_large))
+outcome_large <- rbinom(n_large, size = 1, prob = prob_large)
+health_data_large <- data.frame(
+  outcome = outcome_large,
+  age = age_large,
+  bmi = bmi_large,
+  treatment = treatment_large
+)
+
+# Benchmarking the simple_logistic function against glm
+bench_simple_logistic <- bench::mark(
+  simple_logistic_model = simple_logistic(outcome ~ age + bmi + treatment, data = health_data_large),
+  glm_model = glm(outcome ~ age + bmi + treatment, data = health_data_large, family = binomial()),
+  iterations = 10,
+  check = FALSE  # Disable result comparison
+)
+
+print(bench_simple_logistic)
+#> # A tibble: 2 × 13
+#>   expression      min median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time
+#>   <bch:expr>   <bch:> <bch:>     <dbl> <bch:byt>    <dbl> <int> <dbl>   <bch:tm>
+#> 1 simple_logi… 15.5ms 15.9ms      62.8    19.9MB     41.9     6     4     95.6ms
+#> 2 glm_model    15.4ms 15.6ms      64.1    19.9MB    289.      2     9     31.2ms
+#> # ℹ 4 more variables: result <list>, memory <list>, time <list>, gc <list>
+```
+
+Note: We set check = FALSE because simple_logistic() and glm() return
+different types of objects. This setting allows us to focus solely on
+benchmarking the performance without worrying about result equivalence.
+
+#### Interpreting the Results:
+
+The benchmark will provide metrics like median execution time, minimum
+and maximum times, memory allocations, and garbage collections. You can
+compare how simple_logistic() stacks up against glm() in terms of speed
+and memory usage.
+
+## Advanced Usage
+
+### Including Interaction Terms
+
+Sometimes, the relationship between a predictor and the outcome might
+depend on another predictor. You can include interaction terms in your
+model formula to explore these dynamics.
 
 ``` r
 # Fit a model with an interaction term
@@ -191,9 +248,14 @@ summary(model_interaction$fit)
 #> Number of Fisher Scoring iterations: 4
 ```
 
+In this example, age \* treatment includes both the main effects and
+their interaction. This allows you to see if the effect of age on
+outcome changes depending on the treatment group.
+
 ### Making Predictions on New Data
 
-Predict outcomes for new data:
+After fitting a model, you might want to make predictions on new
+observations. Here’s how you can do that.
 
 ``` r
 # New data for prediction
@@ -214,9 +276,15 @@ print(new_data)
 #> 3  55  31         A      0.8901211
 ```
 
+This adds a predicted_prob column to your new_data dataframe, showing
+the estimated probability of outcome being 1 for each new observation.
+
 ### Comparing with Base R Functions
 
-Check that the results are consistent with base R’s glm() function:
+It’s always a good practice to ensure that your custom functions are
+producing results consistent with established base R functions. Here’s
+how you can compare the coefficients from simple_logistic() with those
+from glm() to verify their consistency.
 
 ``` r
 # Fit a model using glm()
@@ -226,6 +294,10 @@ model_glm <- glm(outcome ~ age + bmi + treatment, data = health_data, family = b
 all.equal(coef(model$fit), coef(model_glm))
 #> [1] TRUE
 ```
+
+The all.equal() function checks if the coefficients from both models are
+nearly identical, ensuring that simple_logistic() is functioning
+correctly.
 
 ## Dataset
 
@@ -238,21 +310,35 @@ The package includes a simulated dataset health_data with:
 
 ``` r
 data("health_data")
+head(health_data)
+#>   outcome      age      bmi treatment
+#> 1       1 44.39524 33.79524         A
+#> 2       1 47.69823 30.24965         A
+#> 3       1 65.58708 23.93942         B
+#> 4       1 50.70508 27.17278         B
+#> 5       0 51.29288 23.34264         A
+#> 6       1 67.15065 23.09501         A
 ```
 
 ## Dependencies
 
 SimpleLogistic uses the following R packages: - **ggplot2** for
-plotting. - **pROC** for ROC curve analysis. You can install them with:
+plotting. - **pROC** for ROC curve analysis. - **rlang** For tidy
+evaluation. Additionally, for benchmarking and documentation:
+
+- **bench** For performance benchmarking.
+- **knitr and rmarkdown** For creating vignettes and documentation.
+- **testthat** For running tests. You can install them with:
 
 ``` r
-install.packages(c("ggplot2", "pROC"))
+install.packages(c("ggplot2", "pROC", "rlang", "bench", "knitr", "rmarkdown", "testthat"))
 ```
 
 ## Contributing
 
-If you have suggestions or find any issues, feel free to open an issue
-or pull request on GitHub.
+If you have suggestions for improvements, find any issues, or want to
+contribute to the development of SimpleLogistic, feel free to open an
+issue or submit a pull request on GitHub.
 
 ## License
 

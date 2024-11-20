@@ -62,4 +62,3 @@ simple_logistic <- function(formula, data, ...) {
 
   return(result)
 }
-

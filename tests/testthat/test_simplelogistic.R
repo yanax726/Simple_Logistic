@@ -66,4 +66,11 @@ test_that("plot_predictions function works correctly", {
     plot_predictions(lm_model),
     "The model must be of class 'simple_logistic'."
   )
+
+  # **New Test: newdata not a data frame**
+  expect_error(
+    plot_predictions(model, newdata = "not_a_data_frame"),
+    "'newdata' must be a data frame."
+  )
 })
+

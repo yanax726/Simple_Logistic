@@ -67,7 +67,6 @@ Use the simple_logistic() function to fit a model:
 ```{r}
 # Fit the model
 model <- simple_logistic(outcome ~ age + bmi + treatment, data = health_data)
-
 # View the summary
 summary(model$fit)
 ```
